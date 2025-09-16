@@ -2,14 +2,18 @@ var express = require('express');
 var router = express.Router();
 const useModel = require("./users"); // make sure path is correct
 const passport = require('passport');
-const LocalStrategy = require("passport-local").Strategy;
+const LocalStrategy = require("passport-local");
 
 passport.use(new LocalStrategy(useModel.authenticate()));
+
 passport.serializeUser(useModel.serializeUser());
 passport.deserializeUser(useModel.deserializeUser());
 
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index');
+});
+router.get('/login', function (req, res, next) {
+  res.render('login');
 });
 
 router.post('/register', function (req, res) {
@@ -19,9 +23,10 @@ router.post('/register', function (req, res) {
     fullname: req.body.fullname
   });
 
-  useModel.register(useData, req.body.password).then(function () {
+  useModel.register(useData, req.body.password)
+  .then(function () {
     passport.authenticate("local")(req, res, function () {
-      res.redirect("/profile");
+      res.redirect('/profile');
     });
   });
 });
@@ -31,8 +36,11 @@ router.post('/login', passport.authenticate("local", {
   failureRedirect: "/"
 }), function (req, res) {});
 
+
+
+
 router.get('/profile', isLoggedIn, function (req, res) {
-  res.send("profile");
+  res.render('feed');
 });
 
 router.get('/logout', function (req, res, next) {
