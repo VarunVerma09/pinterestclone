@@ -20,27 +20,28 @@ router.post('/register', function (req, res) {
   const useData = new useModel({
     username: req.body.username,
     email: req.body.email,
-    fullname: req.body.fullname
+    fullname: req.body.fullname,
   });
 
   useModel.register(useData, req.body.password)
   .then(function () {
     passport.authenticate("local")(req, res, function () {
-      res.redirect('/profile');
+      res.redirect('/login');
     });
   });
 });
 
 router.post('/login', passport.authenticate("local", {
   successRedirect: "/profile",
-  failureRedirect: "/"
+  failureRedirect: "/login",
 }), function (req, res) {});
 
 
 
 
 router.get('/profile', isLoggedIn, function (req, res) {
-  res.render('feed');
+  res.render('profile');
+  res.send("THIS IS THE PROFILE ROUTE");
 });
 
 router.get('/logout', function (req, res, next) {
