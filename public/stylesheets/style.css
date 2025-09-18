@@ -150,3 +150,10 @@ hr {
   background-color: rgb(241, 236, 236);
   border-radius: 20px;
 }
+.error{
+  color: red;
+  font-weight: 600;
+  margin: 0px 7px;
+  
+
+}

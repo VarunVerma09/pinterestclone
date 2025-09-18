@@ -12,9 +12,11 @@ passport.deserializeUser(useModel.deserializeUser());
 router.get('/', function (req, res, next) {
   res.render('index');
 });
+
 router.get('/login', function (req, res, next) {
-  res.render('login');
-});
+  res.render('login',{error: req.flash("error")});
+  });
+
 
 router.post('/register', function (req, res) {
   const useData = new useModel({
@@ -34,14 +36,17 @@ router.post('/register', function (req, res) {
 router.post('/login', passport.authenticate("local", {
   successRedirect: "/profile",
   failureRedirect: "/login",
+  failureFlash:true,
 }), function (req, res) {});
 
 
 
 
-router.get('/profile', isLoggedIn, function (req, res) {
-  res.render('profile');
-  res.send("THIS IS THE PROFILE ROUTE");
+router.get('/profile', isLoggedIn, async function (req, res) {
+  const user = await useModel.findOne({
+    username:req.session.passport.user
+  })
+  res.render('profile',{user});
 });
 
 router.get('/logout', function (req, res, next) {
